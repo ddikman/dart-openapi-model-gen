@@ -8,7 +8,7 @@ These models can then be used in your project to do type-safe queries to the dat
 
 ```shell
 flutter pub add --dev dart_openapi_model_gen
-dart run dart_openapi_model_gen -i <your-swagger-url>
+dart run dart_openapi_model_gen -o lib/models/gen -i <your-swagger-url>
 ```
 
 ## Example
@@ -16,7 +16,7 @@ dart run dart_openapi_model_gen -i <your-swagger-url>
 You can run this to try it on any swagger file.
 
 ```shell
-dart run bin/main.dart -i https://petstore.swagger.io/v2/swagger.json
+dart run bin/main.dart -o lib/models/gen -i https://petstore.swagger.io/v2/swagger.json
 ```
 
 For Supabase specifically, you would use this:
