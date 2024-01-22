@@ -1,6 +1,6 @@
-name: supabase_model_generator
-description: Generator for typed models of Supabase databases
-version: 0.0.1
+name: dart_openapi_model_gen
+description: Generator for typed models of Swagger definitions and Supabase databases
+version: 0.0.2
 homepage:
 
 environment:
