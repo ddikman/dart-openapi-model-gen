@@ -1,3 +1,8 @@
+## 0.0.5
+
+* Added fromJson and toJson methods
+* Added outputDir parameter
+
 ## 0.0.4
 
 * Fixed script startup path
