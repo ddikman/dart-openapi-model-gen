@@ -1,3 +1,7 @@
+## 0.0.6
+
+* Added support for optional types
+
 ## 0.0.5
 
 * Added fromJson and toJson methods

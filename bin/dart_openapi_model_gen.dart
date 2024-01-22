@@ -72,14 +72,18 @@ String generateDartClass(String modelName, Map<String, dynamic> properties) {
 
   classBuffer.writeln('class $modelName {');
 
+  final requiredProperties =
+      (properties['required'] as List<String>? ?? []).toSet();
+
   final dependencies = <String>{};
   properties.forEach((propertyName, propertyDetails) {
     try {
+      final optional = !requiredProperties.contains(propertyName) ? '?' : '';
       final (type, isDependency) = getPropertyType(propertyDetails);
       if (isDependency) {
         dependencies.add(type);
       }
-      classBuffer.writeln('  final $type $propertyName;');
+      classBuffer.writeln('  final $type$optional $propertyName;');
     } catch (e, st) {
       print(st);
       throw Exception("Failed to parse property $propertyName: $e");
@@ -89,8 +93,10 @@ String generateDartClass(String modelName, Map<String, dynamic> properties) {
   // Constructor with named parameters and default values
   classBuffer.write('  $modelName({');
   properties.keys.forEach((propertyName) {
-    classBuffer
-        .write('required this.$propertyName, '); // Add default values if needed
+    final required =
+        requiredProperties.contains(propertyName) ? 'required ' : '';
+    classBuffer.write(
+        '$required this.$propertyName, '); // Add default values if needed
   });
   classBuffer.writeln('});');
 
@@ -119,8 +125,9 @@ String generateDartClass(String modelName, Map<String, dynamic> properties) {
       '  factory $modelName.fromJson(Map<String, dynamic> json) => $modelName(');
   properties.forEach((propertyName, propertyDetails) {
     var (dartType, _) = getPropertyType(propertyDetails);
+    final optional = !requiredProperties.contains(propertyName) ? '?' : '';
     classBuffer.writeln(
-        '        $propertyName: json[\'$propertyName\'] as $dartType,');
+        '        $propertyName: json[\'$propertyName\'] as $dartType$optional,');
   });
 
   classBuffer.writeln('  );');
