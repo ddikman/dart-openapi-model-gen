@@ -1,3 +1,8 @@
+## 0.0.4
+
+* Fixed script startup path
+* Added run instructions for other repos
+
 ## 0.0.3
 
 * Added BSD license

@@ -4,6 +4,13 @@ CLI to generate Dart models of OpenAPI Swagger definitions. It was specifically 
 
 These models can then be used in your project to do type-safe queries to the database.
 
+## Use in your repository
+
+```shell
+flutter pub add --dev dart_openapi_model_gen
+dart run dart_openapi_model_gen -i <your-swagger-url>
+```
+
 ## Example
 
 You can run this to try it on any swagger file.
