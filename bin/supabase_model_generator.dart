@@ -39,7 +39,6 @@ String mapSwaggerTypeToDartType(String swaggerType) {
       return 'bool';
     case 'array':
       return 'List'; // You might need to handle the items of the array
-    // Add more cases as needed
     default:
       return 'dynamic'; // Fallback type
   }
@@ -58,6 +57,9 @@ String? getRef(String? ref) {
   final ref = getRef(propertyDetails['\$ref']);
   if (ref != null) {
     return (ref, true);
+  }
+  if (propertyDetails['format'] == 'json') {
+    return ('dynamic', false);
   }
   final swaggerType = propertyDetails['type'] as String;
   return (mapSwaggerTypeToDartType(swaggerType), false);
