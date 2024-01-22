@@ -4,7 +4,7 @@ Command line tool for generator models of a Supabase Swagger API definition.
 
 These models can then be used in your project to do type-safe queries to the database.
 
-## Example
+## Example
 
 You can run this to try it on any swagger file.
 
