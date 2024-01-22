@@ -1,3 +1,7 @@
+## 0.0.3
+
+* Added BSD license
+
 ## 0.0.2
 
 * Renamed everything to make it more generic than just targetting Supabase.
