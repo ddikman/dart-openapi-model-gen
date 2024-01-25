@@ -24,3 +24,8 @@ For Supabase specifically, you would use this:
 ```
 dart run bin/main.dart -i https://<your-project-id>.supabase.co/rest/v1/?apikey=<your-anon-key>
 ```
+
+
+## Roadmap
+
+* Add support for generating enums

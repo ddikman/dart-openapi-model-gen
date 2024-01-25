@@ -1,3 +1,7 @@
+## 0.0.8
+
+* Fixed bug where required properties were optional
+
 ## 0.0.7
 
 * Added an output filter of selected models to generate
