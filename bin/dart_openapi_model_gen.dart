@@ -92,12 +92,12 @@ String generateDartClass(String modelName, Map<String, dynamic> properties) {
 
   // Constructor with named parameters and default values
   classBuffer.write('  $modelName({');
-  properties.keys.forEach((propertyName) {
+  for (var propertyName in properties.keys) {
     final required =
         requiredProperties.contains(propertyName) ? 'required ' : '';
     classBuffer.write(
         '$required this.$propertyName, '); // Add default values if needed
-  });
+  }
   classBuffer.writeln('});');
 
   // copyWith method
@@ -108,16 +108,16 @@ String generateDartClass(String modelName, Map<String, dynamic> properties) {
   });
 
   classBuffer.write('  }) => $modelName(');
-  properties.keys.forEach((propertyName) {
+  for (var propertyName in properties.keys) {
     classBuffer.write('$propertyName: $propertyName ?? this.$propertyName, ');
-  });
+  }
   classBuffer.writeln(');');
 
   // toJson method
   classBuffer.writeln('  Map<String, dynamic> toJson() => {');
-  properties.keys.forEach((propertyName) {
+  for (var propertyName in properties.keys) {
     classBuffer.writeln('        \'$propertyName\': $propertyName,');
-  });
+  }
   classBuffer.writeln('  };');
 
   // fromJson method
