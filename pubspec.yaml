@@ -1,6 +1,6 @@
 name: dart_openapi_model_gen
 description: Generator for typed models of Swagger definitions and Supabase databases
-version: 0.0.9
+version: 0.0.8
 repository: https://github.com/ddikman/dart-openapi-model-gen
 
 environment:
