@@ -1,3 +1,7 @@
+## 0.0.9
+
+* Prettified output a little and added a table/type name
+
 ## 0.0.8
 
 * Fixed bug where required properties were optional

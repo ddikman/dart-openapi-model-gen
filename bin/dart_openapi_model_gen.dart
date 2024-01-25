@@ -76,7 +76,7 @@ String generateDartClass(String modelName, Map<String, dynamic> model) {
   final requiredProperties =
       (model['required'] as List<dynamic>? ?? []).toSet();
 
-  print('required props =  ${requiredProperties}');
+  classBuffer.writeln('  static const modelName = "$modelName";\n');
 
   final dependencies = <String>{};
   properties.forEach((propertyName, propertyDetails) {
@@ -100,6 +100,7 @@ String generateDartClass(String modelName, Map<String, dynamic> model) {
   });
 
   // Constructor with named parameters and default values
+  classBuffer.writeln();
   classBuffer.write('  $modelName({');
   for (var propertyName in properties.keys) {
     final required =
@@ -107,7 +108,7 @@ String generateDartClass(String modelName, Map<String, dynamic> model) {
     classBuffer.write(
         '$required this.$propertyName, '); // Add default values if needed
   }
-  classBuffer.writeln('});');
+  classBuffer.writeln('});\n');
 
   // copyWith method
   classBuffer.writeln('  $modelName copyWith({');
@@ -120,14 +121,14 @@ String generateDartClass(String modelName, Map<String, dynamic> model) {
   for (var propertyName in properties.keys) {
     classBuffer.write('$propertyName: $propertyName ?? this.$propertyName, ');
   }
-  classBuffer.writeln(');');
+  classBuffer.writeln(');\n');
 
   // toJson method
   classBuffer.writeln('  Map<String, dynamic> toJson() => {');
   for (var propertyName in properties.keys) {
     classBuffer.writeln('        \'$propertyName\': $propertyName,');
   }
-  classBuffer.writeln('  };');
+  classBuffer.writeln('  };\n');
 
   // fromJson method
   classBuffer.write(
@@ -149,7 +150,7 @@ String generateDartClass(String modelName, Map<String, dynamic> model) {
       .map((modelName) => 'import \'./$modelName.dart\';')
       .join('\n');
 
-  return '$importStatements\n$classBuffer';
+  return '$importStatements\n\n$classBuffer';
 }
 
 void main(List<String> arguments) async {
