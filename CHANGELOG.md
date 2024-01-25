@@ -1,3 +1,7 @@
+## 0.0.9
+
+* Fixed bug with new output model filter
+
 ## 0.0.8
 
 * Fixed bug where required properties were optional

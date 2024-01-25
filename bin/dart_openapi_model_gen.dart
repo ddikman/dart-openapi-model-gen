@@ -173,8 +173,11 @@ void main(List<String> arguments) async {
 
   var results = parser.parse(arguments);
   var inputUrl = results['input'];
-  var includeModels =
-      (results['models'] as String? ?? '').split(',').map((e) => e.trim());
+  var includeModels = (results['models'] as String? ?? '')
+      .split(',')
+      .map((e) => e.trim())
+      .where((element) => element.isNotEmpty)
+      .toList();
 
   var outputPath = results['output'] ?? 'lib/gen';
 
