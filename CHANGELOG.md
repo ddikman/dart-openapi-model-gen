@@ -1,3 +1,7 @@
+## 0.0.7
+
+* Added an output filter of selected models to generate
+
 ## 0.0.6
 
 * Added support for optional types

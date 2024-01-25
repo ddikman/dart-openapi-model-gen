@@ -156,8 +156,15 @@ void main(List<String> arguments) async {
       help: 'Folder to write the generated files to',
       valueHelp: 'directory path');
 
+  parser.addOption('models',
+      abbr: 'm',
+      help: 'Comma separated list of models to generate',
+      valueHelp: 'model1,model2');
+
   var results = parser.parse(arguments);
   var inputUrl = results['input'];
+  var includeModels =
+      (results['models'] as String? ?? '').split(',').map((e) => e.trim());
 
   var outputPath = results['output'] ?? 'lib/gen';
 
@@ -175,7 +182,12 @@ void main(List<String> arguments) async {
   // Ensure the directory exists
   await ensureDirectoryExists(outputPath);
 
+  var generatedModels = 0;
   for (var modelName in models.keys) {
+    if (includeModels.isNotEmpty && !includeModels.contains(modelName)) {
+      continue;
+    }
+
     final model = models[modelName];
     final properties = model['properties'] as Map<String, dynamic>;
     final classContent = generateDartClass(modelName, properties);
@@ -185,7 +197,8 @@ void main(List<String> arguments) async {
     final file = File(fileName);
     await file.writeAsString(classContent);
     print('Generated: $fileName');
+    generatedModels++;
   }
 
-  print("Done! Generated ${models.length} models.");
+  print("Done! Generated $generatedModels models.");
 }
