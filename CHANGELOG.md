@@ -1,3 +1,7 @@
+## 0.0.10
+
+* Added capitalization and camel case to model names
+
 ## 0.0.9
 
 * Fixed bug with new output model filter
