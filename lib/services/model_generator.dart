@@ -1,5 +1,6 @@
 import 'package:dart_openapi_model_gen/models/enum_model.dart';
 import 'package:dart_openapi_model_gen/models/model.dart';
+import 'package:dart_openapi_model_gen/models/type_category.dart';
 import 'package:dart_openapi_model_gen/string_helpers.dart';
 
 class ModelGenerator {
@@ -47,7 +48,12 @@ class ModelGenerator {
     // toJson method
     output.writeln('  Map<String, dynamic> toJson() => {');
     for (var property in model.properties) {
-      output.writeln('        \'${property.name}\': ${property.name},');
+      final optionalMarker = property.isOptional ? '?' : '';
+      final toStringMarker = property.category == TypeCategory.enumeration
+          ? '$optionalMarker.name'
+          : '';
+      output.writeln(
+          '        \'${property.name}\': ${property.name}$toStringMarker,');
     }
     output.writeln('  };\n');
 
@@ -56,9 +62,15 @@ class ModelGenerator {
         '  factory ${model.className()}.fromJson(Map<String, dynamic> json) => ${model.className()}(\n');
 
     for (var property in model.properties) {
-      final optionalMarker = property.isOptional ? '?' : '';
-      output.writeln(
-          '        ${property.name}: json[\'${property.name}\'] as ${property.type}$optionalMarker,');
+      if (property.category == TypeCategory.enumeration) {
+        final optionalMarker = property.isOptional ? 'firstOrDefault' : 'first';
+        output.writeln(
+            '        ${property.name}: ${property.type}.values.where((e) => e.name == json[\'${property.name}\']).$optionalMarker,');
+      } else {
+        final optionalMarker = property.isOptional ? '?' : '';
+        output.writeln(
+            '        ${property.name}: json[\'${property.name}\'] as ${property.type}$optionalMarker,');
+      }
     }
     output.writeln('  );');
 

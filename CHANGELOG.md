@@ -1,3 +1,7 @@
+## 0.0.15
+
+* Fixed json parsing and encoding of enums
+
 ## 0.0.14
 
 * Reverted fix for spaced enums as dart doesn't allow values for enums
