@@ -1,3 +1,7 @@
+## 0.0.13
+
+* Fixed issue with enum values containing spaces
+
 ## 0.0.12
 
 * Added support for generating enumerations

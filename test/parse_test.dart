@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:dart_openapi_model_gen/services/spec_parser.dart';
 import 'package:test/test.dart';
 
@@ -56,5 +58,28 @@ void main() {
     expect(model.properties.single.name, 'myList');
     expect(model.properties.single.type, 'List<MyEnum>');
     expect(model.dependencies.first, "MyEnum");
+  });
+
+  test('can parse enums with spaces', () {
+    const input = '''{
+  "definitions": {
+    "myModel": {
+      "properties": {
+          "myEnum": {
+          "type": "string",
+          "enum": ["Value A", "Value B"],
+          "format": "myEnumType"
+        }
+      }
+    }
+  }
+}''';
+
+    final specParser = SpecParser()..parse(input);
+
+    final enumeration =
+        specParser.enums.singleWhere((e) => e.name == 'MyEnumType');
+    expect(enumeration.values.length, 2);
+    expect(enumeration.values, ['Value A', 'Value B']);
   });
 }

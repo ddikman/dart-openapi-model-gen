@@ -4,7 +4,7 @@ extension StringHelpers on String {
   }
 
   String toCamelCase() {
-    return replaceAllMapped(RegExp(r'_(\w)'), (Match match) {
+    return replaceAllMapped(RegExp(r'[ _](\w)'), (Match match) {
       return match[1]!.toUpperCase();
     });
   }
