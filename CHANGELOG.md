@@ -1,3 +1,7 @@
+## 0.0.14
+
+* Reverted fix for spaced enums as dart doesn't allow values for enums
+
 ## 0.0.13
 
 * Fixed issue with enum values containing spaces
