@@ -1,37 +1,40 @@
 import 'dart:convert';
 
+import 'package:dart_openapi_model_gen/models/enum_model.dart';
 import 'package:dart_openapi_model_gen/models/model.dart';
 import 'package:dart_openapi_model_gen/models/model_property.dart';
+import 'package:dart_openapi_model_gen/models/type_category.dart';
 import 'package:dart_openapi_model_gen/string_helpers.dart';
 
 class SpecParser {
-  static List<Model> parse(String openApiSpecJson) {
+  List<EnumModel> enums = [];
+  List<Model> models = [];
+
+  List<Model> parse(String openApiSpecJson) {
     try {
       final data = json.decode(openApiSpecJson) as Map<String, dynamic>;
-      return _parseDefinitions(data['definitions'] as Map<String, dynamic>);
-    } catch (err) {
-      throw Exception('Failed to parse OpenAPI spec: $err');
+      models = _parseDefinitions(data['definitions'] as Map<String, dynamic>);
+      return models;
+    } catch (err, st) {
+      throw Exception('Failed to parse OpenAPI spec: $err\n\n$st');
     }
   }
 
-  static List<Model> _parseDefinitions(Map<String, dynamic> definitions) {
+  List<Model> _parseDefinitions(Map<String, dynamic> definitions) {
     final models =
         definitions.entries.map((e) => _parseModel(e.key, e.value)).toList();
 
     return models.map((model) {
       final dependencies = model.properties
-          .where((p) => p.isModel)
-          .map((p) => models.singleWhere((m) => m.modelName == p.getModelType(),
-              orElse: () => throw Exception(
-                  'Failed to find dependency for property ${p.name} (${p.type}) in model ${model.modelName}')))
+          .where((p) => p.isDependency)
+          .map((p) => p.getModelOrEnumName())
           .toList();
 
       return model.copyWith(dependencies: dependencies);
     }).toList();
   }
 
-  static Model _parseModel(
-      String modelName, Map<String, dynamic> modelDetails) {
+  Model _parseModel(String modelName, Map<String, dynamic> modelDetails) {
     try {
       final properties = modelDetails['properties'] as Map<String, dynamic>;
       final requiredProperties =
@@ -44,23 +47,22 @@ class SpecParser {
         properties: _parseProperties(properties, requiredProperties),
         dependencies: [],
       );
-    } catch (err) {
-      throw Exception('Failed to parse model $modelName: $err');
+    } catch (err, st) {
+      throw Exception('Failed to parse model $modelName: $err\n\n$st');
     }
   }
 
-  static List<ModelProperty> _parseProperties(
+  List<ModelProperty> _parseProperties(
       Map<String, dynamic> propertyDefinitions, Set requiredProperties) {
     final properties = <ModelProperty>[];
 
     propertyDefinitions.forEach((name, data) {
       try {
-        final type = _getType(data);
+        final type = _parseType(data);
         properties.add(ModelProperty(
           name: name,
           type: type.name,
-          comment: type.comment,
-          isModel: type.isModel,
+          category: type.category,
           isRequired: requiredProperties.contains(name),
         ));
       } catch (err, st) {
@@ -96,38 +98,58 @@ class SpecParser {
     return ref.split('/').last;
   }
 
-  static _PropertyType _getType(Map<String, dynamic> propertyData) {
-    // generate this as a type
-    final enumValues = propertyData['enum'] as List<dynamic>?;
-    final comment = enumValues != null ? 'enum: ${enumValues.join(', ')}' : '';
+  _PropertyType _parseType(Map<String, dynamic> propertyData) {
+    if (propertyData.containsKey('enum')) {
+      return _parseEnumType(propertyData);
+    }
 
     final type = (propertyData['type'] ?? propertyData['format']) as String?;
     if (type == null) {
       return _PropertyType(
           name: _getRef(propertyData['\$ref']).capitalize(),
-          isModel: true,
-          comment: comment);
+          category: TypeCategory.model);
     }
 
     if (type == 'array') {
       final items = propertyData['items'] as Map<String, dynamic>;
-      final listType = _getType(items);
+      final listType = _parseType(items);
+      final isSimple = listType.category == TypeCategory.simple;
       return _PropertyType(
           name: 'List<${listType.name}>',
-          isModel: listType.isModel,
-          comment: comment);
+          category:
+              isSimple ? TypeCategory.simpleList : TypeCategory.complexList);
     }
 
     return _PropertyType(
-        name: _getDartType(type), isModel: false, comment: comment);
+        name: _getDartType(type), category: TypeCategory.simple);
+  }
+
+  _PropertyType _parseEnumType(Map<String, dynamic> propertyData) {
+    final format = propertyData['format'] as String?;
+    if (format == null) {
+      // We have no name of a model to create, so we just return the type
+      return _PropertyType(name: 'String', category: TypeCategory.simple);
+    }
+
+    final name = (propertyData['format'] as String)
+        .split('.')
+        .last
+        .toCamelCase()
+        .capitalize();
+
+    final type = propertyData['type'];
+    final values = (propertyData['enum'] as List<dynamic>)
+        .map((e) => e.toString())
+        .toList();
+
+    enums.add(EnumModel(name: name, values: values, type: type));
+    return _PropertyType(name: name, category: TypeCategory.enumeration);
   }
 }
 
 class _PropertyType {
   final String name;
-  final bool isModel;
-  final String comment;
+  final TypeCategory category;
 
-  _PropertyType(
-      {required this.name, required this.isModel, required this.comment});
+  _PropertyType({required this.name, required this.category});
 }

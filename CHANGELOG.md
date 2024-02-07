@@ -1,3 +1,9 @@
+## 0.0.12
+
+* Added support for generating enumerations
+* Will automatically generate any dependencies for selected models
+* Added some tests
+
 ## 0.0.11
 
 * Refactored parser and generator to allow adding enum support more easily

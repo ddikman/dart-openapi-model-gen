@@ -16,7 +16,7 @@ dart run dart_openapi_model_gen -o lib/models/gen -i <your-swagger-url>
 You can run this to try it on any swagger file.
 
 ```shell
-dart run bin/dart_openapi_model_gen.dart -o lib/models/gen -i https://petstore.swagger.io/v2/swagger.json
+dart run bin/dart_openapi_model_gen.dart -i https://petstore.swagger.io/v2/swagger.json
 ```
 
 For Supabase specifically, you would use this:

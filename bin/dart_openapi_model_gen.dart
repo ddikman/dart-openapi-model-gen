@@ -11,6 +11,12 @@ Future<void> ensureDirectoryExists(String path) async {
   }
 }
 
+Future<void> writeFile(String path, String contents) async {
+  final file = File(path);
+  await file.writeAsString(contents);
+  print('Generated: $path');
+}
+
 void main(List<String> arguments) async {
   var parser = ArgParser();
   parser.addOption('input',
@@ -52,25 +58,55 @@ void main(List<String> arguments) async {
         'Failed to download JSON. Status Code: ${response.statusCode}');
   }
 
-  final models = SpecParser.parse(response.body);
+  final specParser = SpecParser();
+  specParser.parse(response.body);
 
   await ensureDirectoryExists(outputPath);
 
-  var generatedModels = 0;
-  for (var model in models) {
+  final generated = <String>[];
+  for (var model in specParser.models) {
     if (includeModels.isNotEmpty && !includeModels.contains(model.modelName)) {
       continue;
     }
 
     final modelContents = ModelGenerator.generateModel(model);
+    await writeFile("$outputPath/${model.filename()}", modelContents);
+    generated.add(model.modelName);
+  }
+  print("Written ${generated.length} models.");
 
-    // Write the class content to a Dart file
-    final fileName = '$outputPath/${model.filename()}';
-    final file = File(fileName);
-    await file.writeAsString(modelContents);
-    print('Generated: $fileName');
-    generatedModels++;
+  final dependencies = specParser.models
+      .expand((model) => model.dependencies)
+      .where((element) => !generated.contains(element))
+      .toSet();
+
+  var generatedDependencies = 0;
+  for (var dependency in dependencies) {
+    final model = specParser.models
+        .where((element) => element.modelName == dependency)
+        .firstOrNull;
+    if (model != null) {
+      final modelContents = ModelGenerator.generateModel(model);
+      await writeFile("$outputPath/${model.filename()}", modelContents);
+      continue;
+    }
+
+    final enumeration = specParser.enums
+        .where((element) => element.name == dependency)
+        .firstOrNull;
+    if (enumeration != null) {
+      final enumerationContents = ModelGenerator.generateEnum(enumeration);
+      await writeFile(
+          "$outputPath/${enumeration.filename}", enumerationContents);
+      generatedDependencies++;
+      continue;
+    }
+
+    throw Exception('Dependency not found: $dependency');
+  }
+  if (generatedDependencies > 0) {
+    print("Written $generatedDependencies required dependencies.");
   }
 
-  print("Done! Written $generatedModels models.");
+  print('Done.');
 }

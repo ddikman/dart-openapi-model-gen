@@ -1,24 +1,29 @@
+import 'package:dart_openapi_model_gen/models/type_category.dart';
+
 class ModelProperty {
   String name;
   String type;
   bool isRequired;
-  bool isModel;
-  String comment;
+  TypeCategory category;
 
   ModelProperty(
       {required this.name,
       required this.type,
       required this.isRequired,
-      required this.comment,
-      this.isModel = false});
+      required this.category});
 
   bool get isOptional => !isRequired;
 
   bool get isList => type.startsWith('List<');
 
+  bool get isSimpleType =>
+      category == TypeCategory.simple || category == TypeCategory.simpleList;
+
+  get isDependency => !isSimpleType;
+
   // If a list of models or a single model ref, will return the name, otherwise throw
-  String getModelType() {
-    if (!isModel) {
+  String getModelOrEnumName() {
+    if (isSimpleType) {
       throw Exception('Property $name is not a model');
     }
     if (isList) {
@@ -29,7 +34,7 @@ class ModelProperty {
 
   @override
   String toString() {
-    return 'ModelProperty{name: $name, type: $type, isRequired: $isRequired, isModel: $isModel}';
+    return 'ModelProperty{name: $name, type: $type, isRequired: $isRequired, category: $category}';
   }
 
   @override
@@ -40,9 +45,9 @@ class ModelProperty {
           name == other.name &&
           type == other.type &&
           isRequired == other.isRequired &&
-          isModel == other.isModel;
+          category == other.category;
 
   @override
   int get hashCode =>
-      name.hashCode ^ type.hashCode ^ isRequired.hashCode ^ isModel.hashCode;
+      name.hashCode ^ type.hashCode ^ isRequired.hashCode ^ category.hashCode;
 }
