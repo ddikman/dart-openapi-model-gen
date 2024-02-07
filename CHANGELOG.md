@@ -1,3 +1,8 @@
+## 0.0.11
+
+* Refactored parser and generator to allow adding enum support more easily
+* Improved output formatting
+
 ## 0.0.10
 
 * Added capitalization and camel case to model names
