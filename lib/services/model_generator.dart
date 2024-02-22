@@ -63,7 +63,7 @@ class ModelGenerator {
 
     for (var property in model.properties) {
       if (property.category == TypeCategory.enumeration) {
-        final optionalMarker = property.isOptional ? 'firstOrDefault' : 'first';
+        final optionalMarker = property.isOptional ? 'firstOrNull' : 'first';
         output.writeln(
             '        ${property.name}: ${property.type}.values.where((e) => e.name == json[\'${property.name}\']).$optionalMarker,');
       } else {
