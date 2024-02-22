@@ -1,3 +1,7 @@
+## 0.0.16
+
+* Issue with generating enums
+
 ## 0.0.15
 
 * Fixed json parsing and encoding of enums
