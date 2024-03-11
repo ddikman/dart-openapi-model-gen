@@ -53,7 +53,7 @@ class ModelGenerator {
           ? '$optionalMarker.name'
           : '';
       output.writeln(
-          '        \'${property.name}\': ${property.name}$toStringMarker,');
+          '        \'${property.originalName}\': ${property.name}$toStringMarker,');
     }
     output.writeln('  };\n');
 
@@ -65,11 +65,11 @@ class ModelGenerator {
       if (property.category == TypeCategory.enumeration) {
         final optionalMarker = property.isOptional ? 'firstOrNull' : 'first';
         output.writeln(
-            '        ${property.name}: ${property.type}.values.where((e) => e.name == json[\'${property.name}\']).$optionalMarker,');
+            '        ${property.name}: ${property.type}.values.where((e) => e.name == json[\'${property.originalName}\']).$optionalMarker,');
       } else {
         final optionalMarker = property.isOptional ? '?' : '';
         output.writeln(
-            '        ${property.name}: json[\'${property.name}\'] as ${property.type}$optionalMarker,');
+            '        ${property.name}: json[\'${property.originalName}\'] as ${property.type}$optionalMarker,');
       }
     }
     output.writeln('  );');
