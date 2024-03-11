@@ -6,6 +6,7 @@ void main() {
   test('a simple list is not a dependency', () {
     final property = ModelProperty(
       name: 'myList',
+      originalName: 'my_list',
       type: 'List<String>',
       isRequired: true,
       category: TypeCategory.simpleList,
@@ -17,6 +18,7 @@ void main() {
   test('a list of models or enums is a dependency', () {
     final property = ModelProperty(
       name: 'myList',
+      originalName: 'my_list',
       type: 'List<MyEnum>',
       isRequired: true,
       category: TypeCategory.complexList,
