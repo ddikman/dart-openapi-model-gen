@@ -60,7 +60,8 @@ class SpecParser {
       try {
         final type = _parseType(data);
         properties.add(ModelProperty(
-          name: name,
+          name: name.toCamelCase(),
+          originalName: name,
           type: type.name,
           category: type.category,
           isRequired: requiredProperties.contains(name),

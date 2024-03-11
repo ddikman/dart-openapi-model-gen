@@ -2,12 +2,14 @@ import 'package:dart_openapi_model_gen/models/type_category.dart';
 
 class ModelProperty {
   String name;
+  String originalName;
   String type;
   bool isRequired;
   TypeCategory category;
 
   ModelProperty(
       {required this.name,
+      required this.originalName,
       required this.type,
       required this.isRequired,
       required this.category});
