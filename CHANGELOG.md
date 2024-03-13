@@ -1,3 +1,7 @@
+## 0.1.1
+
+* Added support for Supabase's `jsonb` format, same as json
+
 ## 0.1.0
 
 * Added serialization to and from snake case whilst generating camel case property names
