@@ -1,3 +1,7 @@
+## 0.1.2
+
+* Fixed problem with deserializing doubles
+
 ## 0.1.1
 
 * Added support for Supabase's `jsonb` format, same as json

@@ -1,5 +1,6 @@
 import 'package:dart_openapi_model_gen/models/enum_model.dart';
 import 'package:dart_openapi_model_gen/models/model.dart';
+import 'package:dart_openapi_model_gen/models/model_property.dart';
 import 'package:dart_openapi_model_gen/models/type_category.dart';
 import 'package:dart_openapi_model_gen/string_helpers.dart';
 
@@ -69,7 +70,7 @@ class ModelGenerator {
       } else {
         final optionalMarker = property.isOptional ? '?' : '';
         output.writeln(
-            '        ${property.name}: json[\'${property.originalName}\'] as ${property.type}$optionalMarker,');
+            '        ${property.name}: ${_fromJson(property)}$optionalMarker,');
       }
     }
     output.writeln('  );');
@@ -78,6 +79,13 @@ class ModelGenerator {
     output.writeln('}');
 
     return output.toString();
+  }
+
+  static String _fromJson(ModelProperty property) {
+    if (property.type == 'double') {
+      return 'json[\'${property.originalName}\'].toDouble()';
+    }
+    return 'json[\'${property.originalName}\'] as ${property.type}';
   }
 
   static String generateEnum(EnumModel enumeration) {
