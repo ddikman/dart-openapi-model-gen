@@ -87,6 +87,7 @@ class SpecParser {
       case 'array':
         return 'List'; // You might need to handle the items of the array
       case 'json':
+      case 'jsonb':
         return 'dynamic';
       case 'number':
         return 'double';
