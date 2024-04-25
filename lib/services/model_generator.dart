@@ -70,7 +70,7 @@ class ModelGenerator {
       } else {
         final optionalMarker = property.isOptional ? '?' : '';
         output.writeln(
-            '        ${property.name}: ${_fromJson(property)}$optionalMarker,');
+            '        ${property.name}: ${_fromJson(property, optionalMarker)},');
       }
     }
     output.writeln('  );');
@@ -81,11 +81,11 @@ class ModelGenerator {
     return output.toString();
   }
 
-  static String _fromJson(ModelProperty property) {
+  static String _fromJson(ModelProperty property, String optionalMarker) {
     if (property.type == 'double') {
-      return 'json[\'${property.originalName}\'].toDouble()';
+      return 'json[\'${property.originalName}\']$optionalMarker.toDouble()';
     }
-    return 'json[\'${property.originalName}\'] as ${property.type}';
+    return 'json[\'${property.originalName}\'] as ${property.type}$optionalMarker';
   }
 
   static String generateEnum(EnumModel enumeration) {

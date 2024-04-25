@@ -1,3 +1,7 @@
+## 0.1.3
+
+* Fixed generation problem causing syntax error for optional doubles
+
 ## 0.1.2
 
 * Fixed problem with deserializing doubles
