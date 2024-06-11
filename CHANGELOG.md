@@ -1,3 +1,7 @@
+## 0.1.5
+
+* Generation syntax fix
+
 ## 0.1.4
 
 * Fixed generation of lists where a cast from `List<dynamic>` had to happen
