@@ -1,3 +1,7 @@
+## 0.1.4
+
+* Fixed generation of lists where a cast from `List<dynamic>` had to happen
+
 ## 0.1.3
 
 * Fixed generation problem causing syntax error for optional doubles

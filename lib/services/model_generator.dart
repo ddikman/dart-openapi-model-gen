@@ -85,6 +85,12 @@ class ModelGenerator {
     if (property.type == 'double') {
       return 'json[\'${property.originalName}\']$optionalMarker.toDouble()';
     }
+
+    if (property.isList) {
+      final asOptional = optionalMarker.isEmpty ? '' : '.$optionalMarker';
+      return 'json[\'${property.originalName}\']${asOptional}cast<${property.type}$optionalMarker>()';
+    }
+
     return 'json[\'${property.originalName}\'] as ${property.type}$optionalMarker';
   }
 
