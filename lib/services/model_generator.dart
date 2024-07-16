@@ -88,7 +88,7 @@ class ModelGenerator {
 
     if (property.isList) {
       final asOptional = optionalMarker.isEmpty ? '' : '$optionalMarker.';
-      final castCall = '${property.type.replaceAll('List', 'cast')}()';
+      final castCall = '${property.type.replaceAll('List', '.cast')}()';
       return 'json[\'${property.originalName}\']$asOptional$castCall';
     }
 

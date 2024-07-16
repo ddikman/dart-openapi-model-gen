@@ -1,3 +1,7 @@
+## 0.1.6
+
+* Fixed bug in casting arrays of values such as `.cast<String>` which was missing a period
+
 ## 0.1.5
 
 * Generation syntax fix
