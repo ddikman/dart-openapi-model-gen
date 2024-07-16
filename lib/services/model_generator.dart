@@ -19,7 +19,8 @@ class ModelGenerator {
     output.writeln('  static const modelName = "${model.modelName}";\n');
 
     for (var property in model.properties) {
-      final optionalMarker = property.isOptional ? '?' : '';
+      final optionalMarker =
+          property.isOptional && property.type != 'dynamic' ? '?' : '';
       output
           .writeln('  final ${property.type}$optionalMarker ${property.name};');
     }
@@ -36,7 +37,9 @@ class ModelGenerator {
     // copyWith method
     output.writeln('  ${model.className()} copyWith({');
     for (var property in model.properties) {
-      output.writeln('    ${property.type}? ${property.name},');
+      // dynamic doesn't require optional, so for linting purposes
+      final optionalMarker = property.type == 'dynamic' ? '' : '?';
+      output.writeln('    ${property.type}$optionalMarker ${property.name},');
     }
 
     output.write('  }) => ${model.className()}(\n');
@@ -63,15 +66,8 @@ class ModelGenerator {
         '  factory ${model.className()}.fromJson(Map<String, dynamic> json) => ${model.className()}(\n');
 
     for (var property in model.properties) {
-      if (property.category == TypeCategory.enumeration) {
-        final optionalMarker = property.isOptional ? 'firstOrNull' : 'first';
-        output.writeln(
-            '        ${property.name}: ${property.type}.values.where((e) => e.name == json[\'${property.originalName}\']).$optionalMarker,');
-      } else {
-        final optionalMarker = property.isOptional ? '?' : '';
-        output.writeln(
-            '        ${property.name}: ${_fromJson(property, optionalMarker)},');
-      }
+      output
+          .writeln('        ${property.name}: ${propertyFromJson(property)},');
     }
     output.writeln('  );');
 
@@ -81,15 +77,23 @@ class ModelGenerator {
     return output.toString();
   }
 
-  static String _fromJson(ModelProperty property, String optionalMarker) {
+  // visible for testing
+  static String propertyFromJson(ModelProperty property) {
+    if (property.category == TypeCategory.enumeration) {
+      final optionalMarker = property.isOptional ? 'firstOrNull' : 'first';
+      return "${property.type}.values.where((e) => e.name == json['${property.originalName}']).$optionalMarker";
+    }
+
+    final optionalMarker =
+        property.isOptional && property.type != 'dynamic' ? '?' : '';
+
     if (property.type == 'double') {
       return 'json[\'${property.originalName}\']$optionalMarker.toDouble()';
     }
 
     if (property.isList) {
-      final asOptional = optionalMarker.isEmpty ? '' : '$optionalMarker.';
-      final castCall = '${property.type.replaceAll('List', '.cast')}()';
-      return 'json[\'${property.originalName}\']$asOptional$castCall';
+      final castCall = '${property.type.replaceAll('List', 'cast')}()';
+      return 'json[\'${property.originalName}\']$optionalMarker.$castCall';
     }
 
     return 'json[\'${property.originalName}\'] as ${property.type}$optionalMarker';
