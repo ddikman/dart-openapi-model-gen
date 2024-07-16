@@ -1,0 +1,35 @@
+name: Lint and test
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  lint_and_test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+
+      - name: Install dependencies
+        run: |
+          flutter pub get
+
+      - name: Lint
+        run: flutter analyze
+
+      - name: Tests
+        run: |
+          flutter test
+
+      - name: Lint generated code
+        run: |
+          rm -rf lib/gen
+          dart run bin/dart_openapi_model_gen.dart -i https://petstore.swagger.io/v2/swagger.json
+          flutter analyze

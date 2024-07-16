@@ -1,3 +1,10 @@
+## 0.1.7
+
+* Fixed bug introduced from 0.1.6 where optional lists got double periods
+* Fixed linting issues around dynamics
+* Added some tests to avoid future misses
+* Added CI for tests to run
+
 ## 0.1.6
 
 * Fixed bug in casting arrays of values such as `.cast<String>` which was missing a period

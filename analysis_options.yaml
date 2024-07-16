@@ -4,7 +4,5 @@ linter:
   rules:
     avoid_print: false
 
-# Exclude default out folder, it is git ignored
-analyzer:
-  exclude:
-    - lib/gen/*.dart
+    # without more complex parsing/generation logic enums must allow lowercase
+    constant_identifier_names: false
